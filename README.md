@@ -1,6 +1,6 @@
 # PuLID
 
-Codes and models will be released soon, maybe 1 or 2 weeks, please stay tuned, your star will help facilitate the process.
+Codes and models will be released soon (maybe 1 or 2 weeks), please stay tuned, your star will help facilitate the process.
 
 ## Qualitative Comparison
 PuLID maintains high ID fidelity while effectively reducing interference with the original model's behavior.

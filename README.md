@@ -1,4 +1,7 @@
-# PuLID
+# PuLID: Pure and Lightning ID Customization via Contrastive Alignment
+
+[![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.16022)
+
 
 Codes and models will be released soon (maybe 1 or 2 weeks), please stay tuned, your star will help facilitate the process.
 

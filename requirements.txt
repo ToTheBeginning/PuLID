@@ -1,0 +1,16 @@
+torch==2.0.1
+torchvision==0.15.2
+diffusers==0.25.0
+transformers==4.36.2
+gradio>=4.0.0
+opencv-python
+httpx==0.23.3
+timm
+einops
+ftfy
+basicsr
+facexlib
+insightface
+onnxruntime-gpu
+accelerate
+spaces==0.19.4

@@ -1,13 +1,13 @@
 # PuLID
 
 ### :open_book: PuLID: Pure and Lightning ID Customization via Contrastive Alignment
-> [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.16022)<br>
+> [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.16022) [![arXiv](https://img.shields.io/badge/🤗-HuggingFaceDemo-orange)](https://huggingface.co/spaces/yanze/PuLID) <br>
 > Zinan Guo*, Yanze Wu*✝, Zhuowei Chen, Lang Chen, Qian He <br>
 > (*Equal Contribution, ✝Corresponding Author) <br>
 > ByteDance Inc <br>
 
 ### :triangular_flag_on_post: Updates
-* **2024.05.01**: release codes&models.
+* **2024.05.01**: release codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
 * **2024.04.25**: release arXiv paper.
 
 ## Examples
@@ -33,10 +33,14 @@ pip install -r requirements.txt
 ```
 
 ## :zap: Quick Inference
-### Gradio Demo
+### Local Gradio Demo
 ```bash
 python app.py
 ```
+
+### Online HuggingFace Demo
+Thanks for the GPU grant from HuggingFace team, you can try PuLID HF demo in 
+[https://huggingface.co/spaces/yanze/PuLID](https://huggingface.co/spaces/yanze/PuLID)
 
 
 ##  Citation

@@ -42,6 +42,21 @@ python app.py
 Thanks for the GPU grant from HuggingFace team, you can try PuLID HF demo in 
 [https://huggingface.co/spaces/yanze/PuLID](https://huggingface.co/spaces/yanze/PuLID)
 
+### Related Resources
+Following are some third-party implementations of PuLID we have found in the Internet. 
+We appreciate the efforts of the respective developers for making PuLID accessible to a wider audience.
+If there are any PuLID based resources and applications that we have not mentioned here, please let us know, 
+and we will include them in this list.
+
+#### Online Demo
+- **Colab**: https://github.com/camenduru/PuLID-jupyter provided by [camenduru](https://github.com/camenduru)
+- **Replicate**: https://replicate.com/zsxkib/pulid provided by [zsxkib](https://replicate.com/zsxkib)
+
+#### ComfyUI
+- https://github.com/ZHO-ZHO-ZHO/ComfyUI-PuLID-ZHO provided by [ZHO](https://github.com/ZHO-ZHO-ZHO)
+
+#### WebUI
+- https://github.com/Mikubill/sd-webui-controlnet/pull/2838 provided by [huchenlei](https://github.com/huchenlei)
 
 ##  Citation
 If PuLID is helpful, please help to ⭐ the repo.

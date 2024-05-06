@@ -42,7 +42,7 @@ python app.py
 Thanks for the GPU grant from HuggingFace team, you can try PuLID HF demo in 
 [https://huggingface.co/spaces/yanze/PuLID](https://huggingface.co/spaces/yanze/PuLID)
 
-### Related Resources
+## :paperclip: Related Resources
 Following are some third-party implementations of PuLID we have found in the Internet. 
 We appreciate the efforts of the respective developers for making PuLID accessible to a wider audience.
 If there are any PuLID based resources and applications that we have not mentioned here, please let us know, 

@@ -58,6 +58,13 @@ class PuLIDPipeline:
 
         # ID adapters
         self.id_adapter = IDEncoder().to(self.device)
+        # download from https://huggingface.co/huchenlei/ipadapter_pulid/tree/main and put it to ./models
+        model_ip_image_proj = load_file("./models/ip-adapter_pulid_sdxl_fp16.safetensors") 
+        image_proj_state_dict = {"image_proj": {}}
+        for key in model_ip_image_proj.keys():
+            if key.startswith('image_proj.'):
+                image_proj_state_dict['image_proj'][key.replace("image_proj.", "")] = model_ip_image_proj[key]
+        self.id_adapter.load_state_dict(image_proj_state_dict["image_proj"])
 
         # preprocessors
         # face align and parsing

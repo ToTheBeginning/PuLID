@@ -7,7 +7,8 @@
 > ByteDance Inc <br>
 
 ### :triangular_flag_on_post: Updates
-* **2024.05.01**: release codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
+* **2024.05.23**: share the [preview of our upcoming v1.1 model](v1.1_preview.md), please stay tuned
+* **2024.05.01**: release v1 codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
 * **2024.04.25**: release arXiv paper.
 
 ## Examples
@@ -58,6 +59,12 @@ and we will include them in this list.
 
 #### WebUI
 - https://github.com/Mikubill/sd-webui-controlnet/pull/2838 provided by [huchenlei](https://github.com/huchenlei)
+
+## Disclaimer
+This project strives to impact the domain of AI-driven image generation positively. Users are granted the freedom to 
+create images using this tool, but they are expected to comply with local laws and utilize it responsibly. 
+The developers do not assume any responsibility for potential misuse by users.
+
 
 ##  Citation
 If PuLID is helpful, please help to ⭐ the repo.

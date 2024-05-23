@@ -7,7 +7,7 @@
 > ByteDance Inc <br>
 
 ### :triangular_flag_on_post: Updates
-* **2024.05.23**: share the [preview of our upcoming v1.1 model](v1.1_preview.md), please stay tuned
+* **2024.05.23**: 🔥🔥share the [preview of our upcoming v1.1 model](v1.1_preview.md), please stay tuned
 * **2024.05.01**: release v1 codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
 * **2024.04.25**: release arXiv paper.
 

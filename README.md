@@ -15,6 +15,10 @@
 ## PuLID for FLUX
 Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
 
+Below results are generated with PuLID-FLUX.
+![pulid_flux_results](https://github.com/user-attachments/assets/7eafb90a-fdd1-4ae7-bc41-8c428d568848)
+
+
 ## Examples
 Images generated with our PuLID
 ![examples](https://github.com/ToTheBeginning/PuLID/assets/11482921/65610b0d-ba4f-4dc3-a74d-bd60f8f5ce37)

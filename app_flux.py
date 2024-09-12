@@ -5,7 +5,7 @@ import torch
 from einops import rearrange
 from PIL import Image
 
-from flux.cli import SamplingOptions
+from flux.util import SamplingOptions
 from flux.sampling import denoise, get_noise, get_schedule, prepare, unpack
 from flux.util import load_ae, load_clip, load_flow_model, load_t5
 from pulid.pipeline_flux import PuLIDPipeline
@@ -150,8 +150,8 @@ _HEADER_ = '''
 
 ❗️❗️❗️**Tips:**
 - `timestep to start inserting ID:` The smaller the value, the higher the fidelity, but the lower the editability; the higher the value, the lower the fidelity, but the higher the editability. **The recommended range for this value is between 0 and 4**. For photorealistic scenes, we recommend using 4; for stylized scenes, we recommend using 0-1. If you are not satisfied with the similarity, you can lower this value; conversely, if you are not satisfied with the editability, you can increase this value.
-- `true CFG scale:` In most scenarios, it is recommended to use a fake CFG, i.e., setting the true CFG scale to 1, and just adjusting the guidance scale. This is also more efficiency. However, in a few cases, utilizing a true CFG can yield better results. For more detaileds, please refer to XX.
-- please refer to the <a href='URL_ADDRESS' target='_blank'>github doc</a> for more details and info about the model, we provide the detail explanation about the above two parameters in the doc.
+- `true CFG scale:` In most scenarios, it is recommended to use a fake CFG, i.e., setting the true CFG scale to 1, and just adjusting the guidance scale. This is also more efficiency. However, in a few cases, utilizing a true CFG can yield better results. For more detaileds, please refer to the [doc](https://github.com/ToTheBeginning/PuLID/blob/main/docs/pulid_for_flux.md#useful-tips).
+- please refer to the <a href='https://github.com/ToTheBeginning/PuLID/blob/main/docs/pulid_for_flux.md' target='_blank'>github doc</a> for more details and info about the model, we provide the detail explanation about the above two parameters in the doc.
 - we provide some examples in the bottom, you can try these example prompts first
 
 '''  # noqa E501
@@ -280,8 +280,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PuLID for FLUX.1-dev")
     parser.add_argument("--name", type=str, default="flux-dev", choices=list('flux-dev'),
                         help="currently only support flux-dev")
-    parser.add_argument("--device", type=str, default="cuda" if torch.cuda.is_available() else "cpu",
-                        help="Device to use")
+    parser.add_argument("--device", type=str, default="cuda", help="Device to use")
     parser.add_argument("--offload", action="store_true", help="Offload model to CPU when not in use")
     parser.add_argument("--port", type=int, default=8080, help="Port to use")
     parser.add_argument("--dev", action='store_true', help="Development mode")

@@ -33,7 +33,7 @@ As shown in the above image, in terms of ID fidelity, using fake CFG is similar 
    
 
 ## Some Technical Details
-- We switch the ID encoder from an MLP structure to a Transformer structure. Interested users can refer to [source code](../pulid/encoders_flux.py)
+- We switch the ID encoder from an MLP structure to a Transformer structure. Interested users can refer to [source code](https://github.com/ToTheBeginning/PuLID/blob/cce7cdd65b5bf283c1a39c29f2726902a3c135ca/pulid/encoders_flux.py#L122)
 - Inspired by [Flamingo](https://arxiv.org/abs/2204.14198), we insert additional cross-attention blocks every few DIT blocks to interact ID features with DIT image features
 - We would like to clarify that the acceleration method (lile SDXL-Lightning) serves as an
 optional acceleration trick, but it is not indispensable for training PuLID. We will update the arxiv paper with the relevant details in the near future. Please stay tuned.

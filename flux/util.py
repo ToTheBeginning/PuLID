@@ -4,12 +4,21 @@ from dataclasses import dataclass
 import torch
 from einops import rearrange
 from huggingface_hub import hf_hub_download
-from imwatermark import WatermarkEncoder
 from safetensors.torch import load_file as load_sft
 
 from flux.model import Flux, FluxParams
 from flux.modules.autoencoder import AutoEncoder, AutoEncoderParams
 from flux.modules.conditioner import HFEmbedder
+
+
+@dataclass
+class SamplingOptions:
+    prompt: str
+    width: int
+    height: int
+    num_steps: int
+    guidance: float
+    seed: int
 
 
 @dataclass
@@ -107,12 +116,12 @@ def load_flow_model(name: str, device: str = "cuda", hf_download: bool = True):
     print("Init model")
     ckpt_path = configs[name].ckpt_path
     if (
-        ckpt_path is None
+        not os.path.exists(ckpt_path)
         and configs[name].repo_id is not None
         and configs[name].repo_flow is not None
         and hf_download
     ):
-        ckpt_path = hf_hub_download(configs[name].repo_id, configs[name].repo_flow)
+        ckpt_path = hf_hub_download(configs[name].repo_id, configs[name].repo_flow, local_dir='models')
 
     with torch.device(device):
         model = Flux(configs[name].params).to(torch.bfloat16)
@@ -138,12 +147,12 @@ def load_clip(device: str = "cuda") -> HFEmbedder:
 def load_ae(name: str, device: str = "cuda", hf_download: bool = True) -> AutoEncoder:
     ckpt_path = configs[name].ae_path
     if (
-        ckpt_path is None
+        not os.path.exists(ckpt_path)
         and configs[name].repo_id is not None
         and configs[name].repo_ae is not None
         and hf_download
     ):
-        ckpt_path = hf_hub_download(configs[name].repo_id, configs[name].repo_ae)
+        ckpt_path = hf_hub_download(configs[name].repo_id, configs[name].repo_ae, local_dir='models')
 
     # Loading the autoencoder
     print("Init AE")
@@ -155,47 +164,3 @@ def load_ae(name: str, device: str = "cuda", hf_download: bool = True) -> AutoEn
         missing, unexpected = ae.load_state_dict(sd, strict=False)
         print_load_warning(missing, unexpected)
     return ae
-
-
-class WatermarkEmbedder:
-    def __init__(self, watermark):
-        self.watermark = watermark
-        self.num_bits = len(WATERMARK_BITS)
-        self.encoder = WatermarkEncoder()
-        self.encoder.set_watermark("bits", self.watermark)
-
-    def __call__(self, image: torch.Tensor) -> torch.Tensor:
-        """
-        Adds a predefined watermark to the input image
-
-        Args:
-            image: ([N,] B, RGB, H, W) in range [-1, 1]
-
-        Returns:
-            same as input but watermarked
-        """
-        image = 0.5 * image + 0.5
-        squeeze = len(image.shape) == 4
-        if squeeze:
-            image = image[None, ...]
-        n = image.shape[0]
-        image_np = rearrange((255 * image).detach().cpu(), "n b c h w -> (n b) h w c").numpy()[:, :, :, ::-1]
-        # torch (b, c, h, w) in [0, 1] -> numpy (b, h, w, c) [0, 255]
-        # watermarking libary expects input as cv2 BGR format
-        for k in range(image_np.shape[0]):
-            image_np[k] = self.encoder.encode(image_np[k], "dwtDct")
-        image = torch.from_numpy(rearrange(image_np[:, :, :, ::-1], "(n b) h w c -> n b c h w", n=n)).to(
-            image.device
-        )
-        image = torch.clamp(image / 255, min=0.0, max=1.0)
-        if squeeze:
-            image = image[0]
-        image = 2 * image - 1
-        return image
-
-
-# A fixed 48-bit message that was choosen at random
-WATERMARK_MESSAGE = 0b001010101111111010000111100111001111010100101110
-# bin(x)[2:] gives bits of x as str, use int to convert them to 0/1
-WATERMARK_BITS = [int(bit) for bit in bin(WATERMARK_MESSAGE)[2:]]
-embed_watermark = WatermarkEmbedder(WATERMARK_BITS)

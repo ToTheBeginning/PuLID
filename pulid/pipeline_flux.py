@@ -5,11 +5,6 @@ import insightface
 import torch
 import torch.nn as nn
 from basicsr.utils import img2tensor, tensor2img
-from diffusers import (
-    DPMSolverMultistepScheduler,
-    StableDiffusionXLPipeline,
-    UNet2DConditionModel,
-)
 from facexlib.parsing import init_parsing_model
 from facexlib.utils.face_restoration_helper import FaceRestoreHelper
 from huggingface_hub import hf_hub_download, snapshot_download
@@ -20,44 +15,32 @@ from torchvision.transforms.functional import normalize, resize
 
 from eva_clip import create_model_and_transforms
 from eva_clip.constants import OPENAI_DATASET_MEAN, OPENAI_DATASET_STD
-from pulid.encoders import IDEncoder
-from pulid.utils import is_torch2_available
-
-if is_torch2_available():
-    from pulid.attention_processor import AttnProcessor2_0 as AttnProcessor
-    from pulid.attention_processor import IDAttnProcessor2_0 as IDAttnProcessor
-else:
-    from pulid.attention_processor import AttnProcessor, IDAttnProcessor
+from pulid.encoders_flux import IDFormer, PerceiverAttentionCA
 
 
-class PuLIDPipeline:
-    def __init__(self, *args, **kwargs):
+class PuLIDPipeline(nn.Module):
+    def __init__(self, dit, device, weight_dtype=torch.bfloat16, *args, **kwargs):
         super().__init__()
-        self.device = 'cuda'
-        sdxl_base_repo = 'stabilityai/stable-diffusion-xl-base-1.0'
-        sdxl_lightning_repo = 'ByteDance/SDXL-Lightning'
-        self.sdxl_base_repo = sdxl_base_repo
+        self.device = device
+        self.weight_dtype = weight_dtype
+        double_interval = 2
+        single_interval = 4
 
-        # load base model
-        unet = UNet2DConditionModel.from_config(sdxl_base_repo, subfolder='unet').to(self.device, torch.float16)
-        unet.load_state_dict(
-            load_file(
-                hf_hub_download(sdxl_lightning_repo, 'sdxl_lightning_4step_unet.safetensors'), device=self.device
-            )
-        )
-        self.hack_unet_attn_layers(unet)
-        self.pipe = StableDiffusionXLPipeline.from_pretrained(
-            sdxl_base_repo, unet=unet, torch_dtype=torch.float16, variant="fp16"
-        ).to(self.device)
-        self.pipe.watermark = None
+        # init encoder
+        self.pulid_encoder = IDFormer().to(self.device, self.weight_dtype)
 
-        # scheduler
-        self.pipe.scheduler = DPMSolverMultistepScheduler.from_config(
-            self.pipe.scheduler.config, timestep_spacing="trailing"
-        )
+        num_ca = 19 // double_interval + 38 // single_interval
+        if 19 % double_interval != 0:
+            num_ca += 1
+        if 38 % single_interval != 0:
+            num_ca += 1
+        self.pulid_ca = nn.ModuleList([
+            PerceiverAttentionCA().to(self.device, self.weight_dtype) for _ in range(num_ca)
+        ])
 
-        # ID adapters
-        self.id_adapter = IDEncoder().to(self.device)
+        dit.pulid_ca = self.pulid_ca
+        dit.pulid_double_interval = double_interval
+        dit.pulid_single_interval = single_interval
 
         # preprocessors
         # face align and parsing
@@ -74,7 +57,7 @@ class PuLIDPipeline:
         # clip-vit backbone
         model, _, _ = create_model_and_transforms('EVA02-CLIP-L-14-336', 'eva_clip', force_custom_clip=True)
         model = model.visual
-        self.clip_vision_model = model.to(self.device)
+        self.clip_vision_model = model.to(self.device, dtype=self.weight_dtype)
         eva_transform_mean = getattr(self.clip_vision_model, 'image_mean', OPENAI_DATASET_MEAN)
         eva_transform_std = getattr(self.clip_vision_model, 'image_std', OPENAI_DATASET_STD)
         if not isinstance(eva_transform_mean, (list, tuple)):
@@ -95,59 +78,44 @@ class PuLIDPipeline:
         gc.collect()
         torch.cuda.empty_cache()
 
-        self.load_pretrain()
+        # self.load_pretrain()
 
         # other configs
         self.debug_img_list = []
 
-    def hack_unet_attn_layers(self, unet):
-        id_adapter_attn_procs = {}
-        for name, _ in unet.attn_processors.items():
-            cross_attention_dim = None if name.endswith("attn1.processor") else unet.config.cross_attention_dim
-            if name.startswith("mid_block"):
-                hidden_size = unet.config.block_out_channels[-1]
-            elif name.startswith("up_blocks"):
-                block_id = int(name[len("up_blocks.")])
-                hidden_size = list(reversed(unet.config.block_out_channels))[block_id]
-            elif name.startswith("down_blocks"):
-                block_id = int(name[len("down_blocks.")])
-                hidden_size = unet.config.block_out_channels[block_id]
-            if cross_attention_dim is not None:
-                id_adapter_attn_procs[name] = IDAttnProcessor(
-                    hidden_size=hidden_size,
-                    cross_attention_dim=cross_attention_dim,
-                ).to(unet.device)
-            else:
-                id_adapter_attn_procs[name] = AttnProcessor()
-        unet.set_attn_processor(id_adapter_attn_procs)
-        self.id_adapter_attn_layers = nn.ModuleList(unet.attn_processors.values())
-
-    def load_pretrain(self):
-        hf_hub_download('guozinan/PuLID', 'pulid_v1.bin', local_dir='models')
-        ckpt_path = 'models/pulid_v1.bin'
-        state_dict = torch.load(ckpt_path, map_location='cpu')
+    def load_pretrain(self, pretrain_path=None):
+        hf_hub_download('guozinan/PuLID', 'pulid_flux_v0.9.0.safetensors', local_dir='models')
+        ckpt_path = 'models/pulid_flux_v0.9.0.safetensors'
+        if pretrain_path is not None:
+            ckpt_path = pretrain_path
+        state_dict = load_file(ckpt_path)
         state_dict_dict = {}
         for k, v in state_dict.items():
             module = k.split('.')[0]
             state_dict_dict.setdefault(module, {})
-            new_k = k[len(module) + 1 :]
+            new_k = k[len(module) + 1:]
             state_dict_dict[module][new_k] = v
 
         for module in state_dict_dict:
             print(f'loading from {module}')
             getattr(self, module).load_state_dict(state_dict_dict[module], strict=True)
 
+        del state_dict
+        del state_dict_dict
+
     def to_gray(self, img):
         x = 0.299 * img[:, 0:1] + 0.587 * img[:, 1:2] + 0.114 * img[:, 2:3]
         x = x.repeat(1, 3, 1, 1)
         return x
 
-    def get_id_embedding(self, image):
+    @torch.no_grad()
+    def get_id_embedding(self, image, cal_uncond=False):
         """
         Args:
             image: numpy rgb image, range [0, 255]
         """
         self.face_helper.clean_all()
+        self.debug_img_list = []
         image_bgr = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
         # get antelopev2 embedding
         face_info = self.app.get(image_bgr)
@@ -177,7 +145,7 @@ class PuLIDPipeline:
             print('fail to detect face using insightface, extract embedding on align face')
             id_ante_embedding = self.handler_ante.get_feat(align_face)
 
-        id_ante_embedding = torch.from_numpy(id_ante_embedding).to(self.device)
+        id_ante_embedding = torch.from_numpy(id_ante_embedding).to(self.device, self.weight_dtype)
         if id_ante_embedding.ndim == 1:
             id_ante_embedding = id_ante_embedding.unsqueeze(0)
 
@@ -197,33 +165,22 @@ class PuLIDPipeline:
         face_features_image = resize(face_features_image, self.clip_vision_model.image_size, InterpolationMode.BICUBIC)
         face_features_image = normalize(face_features_image, self.eva_transform_mean, self.eva_transform_std)
         id_cond_vit, id_vit_hidden = self.clip_vision_model(
-            face_features_image, return_all_features=False, return_hidden=True, shuffle=False
+            face_features_image.to(self.weight_dtype), return_all_features=False, return_hidden=True, shuffle=False
         )
         id_cond_vit_norm = torch.norm(id_cond_vit, 2, 1, True)
         id_cond_vit = torch.div(id_cond_vit, id_cond_vit_norm)
 
         id_cond = torch.cat([id_ante_embedding, id_cond_vit], dim=-1)
+
+        id_embedding = self.pulid_encoder(id_cond, id_vit_hidden)
+
+        if not cal_uncond:
+            return id_embedding, None
+
         id_uncond = torch.zeros_like(id_cond)
         id_vit_hidden_uncond = []
         for layer_idx in range(0, len(id_vit_hidden)):
             id_vit_hidden_uncond.append(torch.zeros_like(id_vit_hidden[layer_idx]))
+        uncond_id_embedding = self.pulid_encoder(id_uncond, id_vit_hidden_uncond)
 
-        id_embedding = self.id_adapter(id_cond, id_vit_hidden)
-        uncond_id_embedding = self.id_adapter(id_uncond, id_vit_hidden_uncond)
-
-        # return id_embedding
-        return torch.cat((uncond_id_embedding, id_embedding), dim=0)
-
-    def inference(self, prompt, size, prompt_n='', image_embedding=None, id_scale=1.0, guidance_scale=1.2, steps=4):
-        images = self.pipe(
-            prompt=prompt,
-            negative_prompt=prompt_n,
-            num_images_per_prompt=size[0],
-            height=size[1],
-            width=size[2],
-            num_inference_steps=steps,
-            guidance_scale=guidance_scale,
-            cross_attention_kwargs={'id_embedding': image_embedding, 'id_scale': id_scale},
-        ).images
-
-        return images
+        return id_embedding, uncond_id_embedding

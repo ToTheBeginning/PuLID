@@ -159,7 +159,7 @@ with gr.Blocks(title="PuLID", css=".gr-box {border-color: #8136e2}") as demo:
 
             example_inps = [
                 [
-                    'portrait, flat papercut style, silhouette, clean cuts, paper, sharp edges, minimalist,color block,man',
+                    'portrait, flat papercut style, silhouette, clean cuts, paper, sharp edges, minimalist,color block,man',  # noqa E501
                     'example_inputs/lecun.jpg',
                     'fidelity',
                 ]

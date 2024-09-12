@@ -7,9 +7,13 @@
 > ByteDance Inc <br>
 
 ### :triangular_flag_on_post: Updates
-* **2024.05.23**: 🔥🔥share the [preview of our upcoming v1.1 model](v1.1_preview.md), please stay tuned
+* **2024.09.12**: 💥 We're thrilled to announce the release of the **PuLID-FLUX-v0.9.0 model**. Enjoy exploring its capabilities! 😊 [Learn more](docs/pulid_for_flux.md).
+* **2024.05.23**: share the [preview of our upcoming v1.1 model](docs/v1.1_preview.md), please stay tuned
 * **2024.05.01**: release v1 codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
 * **2024.04.25**: release arXiv paper.
+
+## PuLID for FLUX
+Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
 
 ## Examples
 Images generated with our PuLID

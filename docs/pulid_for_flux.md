@@ -10,7 +10,8 @@ If PuLID-FLUX is helpful, please help to ⭐ this repo or recommend it to your f
 3. Run the gradio demo with `python app_flux.py`
 
 ### Online Demo
-- huggingface demo: we are currently preparing it, will be available soon.
+- huggingface demo: 
+[https://huggingface.co/spaces/yanze/PuLID-FLUX](https://huggingface.co/spaces/yanze/PuLID-FLUX)
 
 ### ComfyUI
 Please stay tuned for the community implementation

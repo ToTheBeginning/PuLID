@@ -15,6 +15,12 @@
 ## PuLID for FLUX
 Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
 
+### updates
+- [x] Local gradio demo is ready now
+- [x] Online HuggingFace demo is ready now
+- [x] We optimize the codes to support consumer-grade GPUS, the peak memory is now under 24GB.
+
+
 Below results are generated with PuLID-FLUX.
 ![pulid_flux_results](https://github.com/user-attachments/assets/7eafb90a-fdd1-4ae7-bc41-8c428d568848)
 

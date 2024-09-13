@@ -5,9 +5,38 @@ If PuLID-FLUX is helpful, please help to ⭐ this repo or recommend it to your f
 
 ## Inference
 ### Local Gradio Demo
-1. Please first follow the [dependencies-and-installation](../README.md#wrench-dependencies-and-installation) to set up the environment.
-2. Download flux1-dev.safetensors and ae.safetensors from [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev/tree/main) to the models folder.
-3. Run the gradio demo with `python app_flux.py`
+You first need to follow the [dependencies-and-installation](../README.md#wrench-dependencies-and-installation) to set 
+up the environment, and download the `flux1-dev.safetensors` (if you want to use bf16 rather than fp8) and `ae.safetensors` from [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev/tree/main).
+
+There are following four options to run the gradio demo:
+
+#### naive bf16
+simply run `python app_flux.py`, the peak memory is around 45GB.
+
+#### bf16 + offload
+run `python app_flux.py --offload`, the peak memory is around 30GB.
+
+#### fp8 + offload
+To use fp8, you need first to install `optimum-quanto`
+```bash
+pip3 install optimum-quanto
+```
+then run `python app_flux.py --offload --fp8`, the peak memory is around 17GB.
+
+However, there is a difference in image quality between fp8 and bf16, with some degradation in the former. 
+Specifically, the details of the face may be slightly worse, but the layout is similar. If you want the best results
+of PuLID-FLUX, please use bf16 rather than fp8.
+We have included a comparison in the table below.
+
+|      |                                            case1                                            |                                            case2                                             |                                            case3                                            |                                           case4                                          |
+|------|:-------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------:|
+| bf16 | ![c1_bf16](https://github.com/user-attachments/assets/781b2102-d5fe-4786-b4d3-7b8df501c781) | ![c2_bf16](https://github.com/user-attachments/assets/6218a6ca-f07e-4a9a-ac63-896526ff52cf)  | ![c3_bf16](https://github.com/user-attachments/assets/3b6675e5-d26e-4799-b0f3-72e4a7f9a771) |![c4_bf16](https://github.com/user-attachments/assets/b4e162ca-da8b-4e68-8d6b-ba1a674b2a0b)|
+| fp8  | ![c1_fp8](https://github.com/user-attachments/assets/8547f020-bd39-4e9b-aa82-b85be4efc41c)  |  ![c2_fp8](https://github.com/user-attachments/assets/00d3d485-0298-4966-82e1-a31946797ac8)  | ![c3_fp8](https://github.com/user-attachments/assets/b1c6a6b6-1140-49a3-93bd-1245ee5fef4c)  |![c4_fp8](https://github.com/user-attachments/assets/62e512ca-6315-4a89-9350-430e20b86b36)|
+
+
+#### bf16 + more agreesive offload
+run `python app_flux.py --aggressive_offload`, the peak memory is around 23GB.
+But it will be very, very slow. If you have better solution to run bf16 under 24GB, please let us know.
 
 ### Online Demo
 - huggingface demo: 
@@ -42,6 +71,9 @@ optional acceleration trick, but it is not indispensable for training PuLID. We 
 
 ## limitation
 The model is currently in beta version, and we have observed that the ID fidelity may not be high for some male inputs, maybe the model requires more training. If the improved model is ready, we will release it here, so please stay tuned.
+
+## License
+As long as you use FLUX.1-dev model, you should follow the [FLUX.1-dev model license](https://github.com/black-forest-labs/flux/tree/main/model_licenses)
 
 ## contact
 If you have any questions or suggestions about the model, please contact [Yanze Wu](https://tothebeginning.github.io/) or open an issue/discussion here.

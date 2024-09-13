@@ -113,6 +113,7 @@ def denoise(
     neg_txt=None,
     neg_txt_ids=None,
     neg_vec=None,
+    aggressive_offload=False,
 ):
     # this is ignored for schnell
     guidance_vec = torch.full((img.shape[0],), guidance, device=img.device, dtype=img.dtype)
@@ -129,6 +130,7 @@ def denoise(
             guidance=guidance_vec,
             id=id if i >= start_step else None,
             id_weight=id_weight,
+            aggressive_offload=aggressive_offload,
         )
 
         if use_true_cfg and i >= timestep_to_start_cfg:
@@ -142,6 +144,7 @@ def denoise(
                 guidance=guidance_vec,
                 id=uncond_id if i >= start_step else None,
                 id_weight=id_weight,
+                aggressive_offload=aggressive_offload,
             )
             pred = neg_pred + true_cfg * (pred - neg_pred)
 

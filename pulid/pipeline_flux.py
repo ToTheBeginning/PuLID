@@ -4,7 +4,6 @@ import cv2
 import insightface
 import torch
 import torch.nn as nn
-from basicsr.utils import img2tensor, tensor2img
 from facexlib.parsing import init_parsing_model
 from facexlib.utils.face_restoration_helper import FaceRestoreHelper
 from huggingface_hub import hf_hub_download, snapshot_download
@@ -16,6 +15,7 @@ from torchvision.transforms.functional import normalize, resize
 from eva_clip import create_model_and_transforms
 from eva_clip.constants import OPENAI_DATASET_MEAN, OPENAI_DATASET_STD
 from pulid.encoders_flux import IDFormer, PerceiverAttentionCA
+from pulid.utils import img2tensor, tensor2img
 
 
 class PuLIDPipeline(nn.Module):

@@ -5,17 +5,26 @@ import torch
 from einops import rearrange
 from PIL import Image
 
-from flux.util import SamplingOptions
 from flux.sampling import denoise, get_noise, get_schedule, prepare, unpack
-from flux.util import load_ae, load_clip, load_flow_model, load_t5
+from flux.util import (
+    SamplingOptions,
+    load_ae,
+    load_clip,
+    load_flow_model,
+    load_flow_model_quintized,
+    load_t5,
+)
 from pulid.pipeline_flux import PuLIDPipeline
 from pulid.utils import resize_numpy_image_long
 
 
-def get_models(name: str, device: torch.device, offload: bool):
+def get_models(name: str, device: torch.device, offload: bool, fp8: bool):
     t5 = load_t5(device, max_length=128)
     clip = load_clip(device)
-    model = load_flow_model(name, device="cpu" if offload else device)
+    if fp8:
+        model = load_flow_model_quintized(name, device="cpu" if offload else device)
+    else:
+        model = load_flow_model(name, device="cpu" if offload else device)
     model.eval()
     ae = load_ae(name, device="cpu" if offload else device)
     return model, ae, t5, clip
@@ -31,6 +40,7 @@ class FluxGenerator:
             model_name,
             device=self.device,
             offload=self.offload,
+            fp8=args.fp8,
         )
         self.pulid_model = PuLIDPipeline(self.model, device, weight_dtype=torch.bfloat16)
         self.pulid_model.load_pretrain(args.pretrained_model)
@@ -288,10 +298,14 @@ if __name__ == "__main__":
     parser.add_argument("--device", type=str, default="cuda", help="Device to use")
     parser.add_argument("--offload", action="store_true", help="Offload model to CPU when not in use")
     parser.add_argument("--aggressive_offload", action="store_true", help="Offload model more aggressively to CPU when not in use, for 24G GPUs")
+    parser.add_argument("--fp8", action="store_true", help="use flux-dev-fp8 model")
     parser.add_argument("--port", type=int, default=8080, help="Port to use")
     parser.add_argument("--dev", action='store_true', help="Development mode")
     parser.add_argument("--pretrained_model", type=str, help='for development')
     args = parser.parse_args()
+
+    if args.aggressive_offload:
+        args.offload = True
 
     demo = create_demo(args, args.name, args.device, args.offload, args.aggressive_offload)
     demo.launch(server_name='0.0.0.0', server_port=args.port)

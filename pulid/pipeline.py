@@ -4,7 +4,6 @@ import cv2
 import insightface
 import torch
 import torch.nn as nn
-from basicsr.utils import img2tensor, tensor2img
 from diffusers import (
     DPMSolverMultistepScheduler,
     StableDiffusionXLPipeline,
@@ -21,7 +20,7 @@ from torchvision.transforms.functional import normalize, resize
 from eva_clip import create_model_and_transforms
 from eva_clip.constants import OPENAI_DATASET_MEAN, OPENAI_DATASET_STD
 from pulid.encoders import IDEncoder
-from pulid.utils import is_torch2_available
+from pulid.utils import img2tensor, is_torch2_available, tensor2img
 
 if is_torch2_available():
     from pulid.attention_processor import AttnProcessor2_0 as AttnProcessor

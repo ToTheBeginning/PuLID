@@ -12,6 +12,7 @@ from flux.modules.layers import (
     timestep_embedding,
 )
 
+DEVICE = torch.device("cuda")
 
 @dataclass
 class FluxParams:
@@ -94,6 +95,7 @@ class Flux(nn.Module):
         guidance: Tensor = None,
         id: Tensor = None,
         id_weight: float = 1.0,
+        aggressive_offload: bool = False,
     ) -> Tensor:
         if img.ndim != 3 or txt.ndim != 3:
             raise ValueError("Input img and txt tensors must have 3 dimensions.")
@@ -112,14 +114,20 @@ class Flux(nn.Module):
         pe = self.pe_embedder(ids)
 
         ca_idx = 0
+        if aggressive_offload:
+            self.double_blocks = self.double_blocks.to(DEVICE)
         for i, block in enumerate(self.double_blocks):
             img, txt = block(img=img, txt=txt, vec=vec, pe=pe)
 
             if i % self.pulid_double_interval == 0 and id is not None:
                 img = img + id_weight * self.pulid_ca[ca_idx](id, img)
                 ca_idx += 1
+        if aggressive_offload:
+            self.double_blocks.cpu()
 
         img = torch.cat((txt, img), 1)
+        if aggressive_offload:
+            self.single_blocks = self.single_blocks.to(DEVICE)
         for i, block in enumerate(self.single_blocks):
             x = block(img, vec=vec, pe=pe)
             real_img, txt = x[:, txt.shape[1]:, ...], x[:, :txt.shape[1], ...]
@@ -129,7 +137,21 @@ class Flux(nn.Module):
                 ca_idx += 1
 
             img = torch.cat((txt, real_img), 1)
+        if aggressive_offload:
+            self.single_blocks.cpu()
         img = img[:, txt.shape[1] :, ...]
 
         img = self.final_layer(img, vec)  # (N, T, patch_size ** 2 * out_channels)
         return img
+
+    def components_to_gpu(self):
+        # everything but double_blocks, single_blocks
+        self.img_in.to(DEVICE)
+        self.time_in.to(DEVICE)
+        self.guidance_in.to(DEVICE)
+        self.vector_in.to(DEVICE)
+        self.txt_in.to(DEVICE)
+        self.pe_embedder.to(DEVICE)
+        self.final_layer.to(DEVICE)
+        if self.pulid_ca:
+            self.pulid_ca.to(DEVICE)

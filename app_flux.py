@@ -22,9 +22,10 @@ def get_models(name: str, device: torch.device, offload: bool):
 
 
 class FluxGenerator:
-    def __init__(self, model_name: str, device: str, offload: bool, args):
+    def __init__(self, model_name: str, device: str, offload: bool, aggressive_offload: bool, args):
         self.device = torch.device(device)
         self.offload = offload
+        self.aggressive_offload = aggressive_offload
         self.model_name = model_name
         self.model, self.ae, self.t5, self.clip = get_models(
             model_name,
@@ -104,7 +105,10 @@ class FluxGenerator:
         if self.offload:
             self.t5, self.clip = self.t5.cpu(), self.clip.cpu()
             torch.cuda.empty_cache()
-            self.model = self.model.to(self.device)
+            if self.aggressive_offload:
+                self.model.components_to_gpu()
+            else:
+                self.model = self.model.to(self.device)
 
         # denoise initial noise
         x = denoise(
@@ -114,6 +118,7 @@ class FluxGenerator:
             neg_txt=inp_neg["txt"] if use_true_cfg else None,
             neg_txt_ids=inp_neg["txt_ids"] if use_true_cfg else None,
             neg_vec=inp_neg["vec"] if use_true_cfg else None,
+            aggressive_offload=self.aggressive_offload,
         )
 
         # offload model, load autoencoder to gpu
@@ -166,8 +171,8 @@ If you have any questions or feedbacks, feel free to open a discussion or contac
 
 
 def create_demo(args, model_name: str, device: str = "cuda" if torch.cuda.is_available() else "cpu",
-                offload: bool = False):
-    generator = FluxGenerator(model_name, device, offload, args)
+                offload: bool = False, aggressive_offload: bool = False):
+    generator = FluxGenerator(model_name, device, offload, aggressive_offload, args)
 
     with gr.Blocks() as demo:
         gr.Markdown(_HEADER_)
@@ -282,10 +287,11 @@ if __name__ == "__main__":
                         help="currently only support flux-dev")
     parser.add_argument("--device", type=str, default="cuda", help="Device to use")
     parser.add_argument("--offload", action="store_true", help="Offload model to CPU when not in use")
+    parser.add_argument("--aggressive_offload", action="store_true", help="Offload model more aggressively to CPU when not in use, for 24G GPUs")
     parser.add_argument("--port", type=int, default=8080, help="Port to use")
     parser.add_argument("--dev", action='store_true', help="Development mode")
     parser.add_argument("--pretrained_model", type=str, help='for development')
     args = parser.parse_args()
 
-    demo = create_demo(args, args.name, args.device, args.offload)
+    demo = create_demo(args, args.name, args.device, args.offload, args.aggressive_offload)
     demo.launch(server_name='0.0.0.0', server_port=args.port)

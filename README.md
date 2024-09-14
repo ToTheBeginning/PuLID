@@ -15,10 +15,12 @@
 ## PuLID for FLUX
 Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
 
+We will actively update and maintain this repository in the near future, so please stay tuned.
+
 ### updates
 - [x] Local gradio demo is ready now
-- [x] Online HuggingFace demo is ready now
-- [x] We optimize the codes to support consumer-grade GPUS, the peak memory is now under 24GB.
+- [x] Online HuggingFace demo is ready now [![flux](https://img.shields.io/badge/🤗-PuLID_FLUX_demo-orange)](https://huggingface.co/spaces/yanze/PuLID-FLUX)
+- [x] We optimize the codes to support consumer-grade GPUS, the peak memory is now under 24GB (17GB if you use fp8 model). Check the details [here](https://github.com/ToTheBeginning/PuLID/blob/main/docs/pulid_for_flux.md#local-gradio-demo)
 
 
 Below results are generated with PuLID-FLUX.
@@ -33,8 +35,8 @@ Applications
 https://github.com/ToTheBeginning/PuLID/assets/11482921/9bdd0c8a-99e8-4eab-ab9e-39bf796cc6b8
 
 ## :wrench: Dependencies and Installation
-- Python >= 3.7 (Recommend to use [Anaconda](https://www.anaconda.com/download/#linux) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html))
-- [PyTorch >= 2.0](https://pytorch.org/)
+- Python >= 3.9 (Recommend to use [Anaconda](https://www.anaconda.com/download/#linux) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html))
+- [PyTorch >= 2.0](https://pytorch.org/) if you don't need flux-dev-fp8, otherwise [PyTorch >= 2.4.1](https://pytorch.org/)
 ```bash
 # clone PuLID repo
 git clone https://github.com/ToTheBeginning/PuLID.git
@@ -44,7 +46,10 @@ conda create --name pulid python=3.10
 # activate env
 conda activate pulid
 # Install dependent packages
+# 1. if you don't need flux-fp8, e.g., you are using xl or flux-bf16, install the following requirements.txt
 pip install -r requirements.txt
+# 2. if you need flux-fp8 (to put flux on consumer-grade gpu), install the following requirements_fp8.txt
+pip install -r requirements_fp8.txt
 ```
 
 ## :zap: Quick Inference

@@ -17,11 +17,9 @@ simply run `python app_flux.py`, the peak memory is around 45GB.
 run `python app_flux.py --offload`, the peak memory is around 30GB.
 
 #### fp8 + offload
-To use fp8, you need first to install `optimum-quanto`
-```bash
-pip3 install optimum-quanto
-```
-then run `python app_flux.py --offload --fp8`, the peak memory is around 17GB.
+To use fp8, you need to make sure you have installed `requirements-fp8.txt`, it includes `optimum-quanto` and higher version of PyTorch.
+
+Run `python app_flux.py --offload --fp8`, the peak memory is around 17GB.
 
 However, there is a difference in image quality between fp8 and bf16, with some degradation in the former. 
 Specifically, the details of the face may be slightly worse, but the layout is similar. If you want the best results

@@ -19,7 +19,7 @@ from pulid.utils import img2tensor, tensor2img
 
 
 class PuLIDPipeline(nn.Module):
-    def __init__(self, dit, device, weight_dtype=torch.bfloat16, *args, **kwargs):
+    def __init__(self, dit, device, weight_dtype=torch.bfloat16, onnx_provider='gpu', *args, **kwargs):
         super().__init__()
         self.device = device
         self.weight_dtype = weight_dtype
@@ -68,12 +68,12 @@ class PuLIDPipeline(nn.Module):
         self.eva_transform_std = eva_transform_std
         # antelopev2
         snapshot_download('DIAMONIK7777/antelopev2', local_dir='models/antelopev2')
-        self.app = FaceAnalysis(
-            name='antelopev2', root='.', providers=['CUDAExecutionProvider', 'CPUExecutionProvider']
-        )
+        providers = ['CPUExecutionProvider'] if onnx_provider == 'cpu' \
+            else ['CUDAExecutionProvider', 'CPUExecutionProvider']
+        self.app = FaceAnalysis(name='antelopev2', root='.', providers=providers)
         self.app.prepare(ctx_id=0, det_size=(640, 640))
         self.handler_ante = insightface.model_zoo.get_model('models/antelopev2/glintr100.onnx',
-                                                            providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
+                                                            providers=providers)
         self.handler_ante.prepare(ctx_id=0)
 
         gc.collect()
@@ -83,6 +83,13 @@ class PuLIDPipeline(nn.Module):
 
         # other configs
         self.debug_img_list = []
+
+    def components_to_device(self, device):
+        # everything but pulid_ca
+        self.face_helper.face_det = self.face_helper.face_det.to(device)
+        self.face_helper.face_parse = self.face_helper.face_parse.to(device)
+        self.clip_vision_model = self.clip_vision_model.to(device)
+        self.pulid_encoder = self.pulid_encoder.to(device)
 
     def load_pretrain(self, pretrain_path=None):
         hf_hub_download('guozinan/PuLID', 'pulid_flux_v0.9.0.safetensors', local_dir='models')

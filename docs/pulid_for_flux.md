@@ -11,19 +11,21 @@ up the environment, and download the `flux1-dev.safetensors` (if you want to use
 There are following four options to run the gradio demo:
 
 #### naive bf16
-simply run `python app_flux.py`, the peak memory is around 45GB.
+simply run `python app_flux.py`, the peak memory is under 45GB.
 
 #### bf16 + offload
-run `python app_flux.py --offload`, the peak memory is around 30GB.
+run `python app_flux.py --offload`, the peak memory is under 30GB.
 
-#### fp8 + offload
+#### fp8 + offload  (for consumer-grade GPUs)
 To use fp8, you need to make sure you have installed `requirements-fp8.txt`, it includes `optimum-quanto` and higher version of PyTorch.
 
-Run `python app_flux.py --offload --fp8`, the peak memory is around 17GB.
+Run `python app_flux.py --offload --fp8 --onnx_provider cpu`, the peak memory is under 15GB, this is for GPU with 16GB memory.
+
+For 24GB graphic memory users, you can run `python app_flux.py --offload --fp8`, the peak memory is under 17GB.
 
 However, there is a difference in image quality between fp8 and bf16, with some degradation in the former. 
 Specifically, the details of the face may be slightly worse, but the layout is similar. If you want the best results
-of PuLID-FLUX, please use bf16 rather than fp8.
+of PuLID-FLUX or you have the resources, please use bf16 rather than fp8.
 We have included a comparison in the table below.
 
 |      |                                            case1                                            |                                            case2                                             |                                            case3                                            |                                           case4                                          |

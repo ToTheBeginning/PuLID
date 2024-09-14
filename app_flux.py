@@ -42,7 +42,13 @@ class FluxGenerator:
             offload=self.offload,
             fp8=args.fp8,
         )
-        self.pulid_model = PuLIDPipeline(self.model, device, weight_dtype=torch.bfloat16)
+        self.pulid_model = PuLIDPipeline(self.model, device="cpu" if offload else device, weight_dtype=torch.bfloat16,
+                                         onnx_provider=args.onnx_provider)
+        if offload:
+            self.pulid_model.face_helper.face_det.mean_tensor = self.pulid_model.face_helper.face_det.mean_tensor.to(torch.device("cuda"))
+            self.pulid_model.face_helper.face_det.device = torch.device("cuda")
+            self.pulid_model.face_helper.device = torch.device("cuda")
+            self.pulid_model.device = torch.device("cuda")
         self.pulid_model.load_pretrain(args.pretrained_model)
 
     @torch.inference_mode()
@@ -84,13 +90,6 @@ class FluxGenerator:
 
         use_true_cfg = abs(true_cfg - 1.0) > 1e-2
 
-        if id_image is not None:
-            id_image = resize_numpy_image_long(id_image, 1024)
-            id_embeddings, uncond_id_embeddings = self.pulid_model.get_id_embedding(id_image, cal_uncond=use_true_cfg)
-        else:
-            id_embeddings = None
-            uncond_id_embeddings = None
-
         # prepare input
         x = get_noise(
             1,
@@ -111,9 +110,22 @@ class FluxGenerator:
         inp = prepare(t5=self.t5, clip=self.clip, img=x, prompt=opts.prompt)
         inp_neg = prepare(t5=self.t5, clip=self.clip, img=x, prompt=neg_prompt) if use_true_cfg else None
 
-        # offload TEs to CPU, load model to gpu
+        # offload TEs to CPU, load processor models and id encoder to gpu
         if self.offload:
             self.t5, self.clip = self.t5.cpu(), self.clip.cpu()
+            torch.cuda.empty_cache()
+            self.pulid_model.components_to_device(torch.device("cuda"))
+
+        if id_image is not None:
+            id_image = resize_numpy_image_long(id_image, 1024)
+            id_embeddings, uncond_id_embeddings = self.pulid_model.get_id_embedding(id_image, cal_uncond=use_true_cfg)
+        else:
+            id_embeddings = None
+            uncond_id_embeddings = None
+
+        # offload processor models and id encoder to CPU, load dit model to gpu
+        if self.offload:
+            self.pulid_model.components_to_device(torch.device("cpu"))
             torch.cuda.empty_cache()
             if self.aggressive_offload:
                 self.model.components_to_gpu()
@@ -299,6 +311,9 @@ if __name__ == "__main__":
     parser.add_argument("--offload", action="store_true", help="Offload model to CPU when not in use")
     parser.add_argument("--aggressive_offload", action="store_true", help="Offload model more aggressively to CPU when not in use, for 24G GPUs")
     parser.add_argument("--fp8", action="store_true", help="use flux-dev-fp8 model")
+    parser.add_argument("--onnx_provider", type=str, default="gpu", choices=["gpu", "cpu"],
+                        help="set onnx_provider to cpu (default gpu) can help reduce RAM usage, and when combined with"
+                             "fp8 option, the peak RAM is under 15GB")
     parser.add_argument("--port", type=int, default=8080, help="Port to use")
     parser.add_argument("--dev", action='store_true', help="Development mode")
     parser.add_argument("--pretrained_model", type=str, help='for development')

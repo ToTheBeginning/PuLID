@@ -11,8 +11,8 @@ einops
 ftfy
 facexlib
 insightface
+onnxruntime
 onnxruntime-gpu
 accelerate
 SentencePiece
-fire
 safetensors

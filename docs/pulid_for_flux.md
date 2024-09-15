@@ -7,6 +7,7 @@ If PuLID-FLUX is helpful, please help to ⭐ this repo or recommend it to your f
 ### Local Gradio Demo
 You first need to follow the [dependencies-and-installation](../README.md#wrench-dependencies-and-installation) to set 
 up the environment, and download the `flux1-dev.safetensors` (if you want to use bf16 rather than fp8) and `ae.safetensors` from [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev/tree/main).
+The PuLID-FLUX model will be automatically downloaded from [huggingface](https://huggingface.co/guozinan/PuLID/tree/main).
 
 There are following four options to run the gradio demo:
 
@@ -18,6 +19,7 @@ run `python app_flux.py --offload`, the peak memory is under 30GB.
 
 #### fp8 + offload  (for consumer-grade GPUs)
 To use fp8, you need to make sure you have installed `requirements-fp8.txt`, it includes `optimum-quanto` and higher version of PyTorch.
+We use `flux-dev-fp8` checkpoint from [XLabs-AI/flux-dev-fp8](https://huggingface.co/XLabs-AI/flux-dev-fp8), it will be automatically downloaded. You can also download it manually and put it in the models folder
 
 Run `python app_flux.py --offload --fp8 --onnx_provider cpu`, the peak memory is under 15GB, this is for GPU with 16GB memory.
 

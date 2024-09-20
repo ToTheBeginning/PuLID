@@ -1,7 +1,7 @@
 # PuLID
 
 ### :open_book: PuLID: Pure and Lightning ID Customization via Contrastive Alignment
-> [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.16022) [![xl](https://img.shields.io/badge/🤗-HuggingFaceDemo-orange)](https://huggingface.co/spaces/yanze/PuLID) [![flux](https://img.shields.io/badge/🤗-PuLID_FLUX_demo-orange)](https://huggingface.co/spaces/yanze/PuLID-FLUX) <br>
+> [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.16022) [![xl](https://img.shields.io/badge/🤗-HuggingFaceDemo-orange)](https://huggingface.co/spaces/yanze/PuLID) [![flux](https://img.shields.io/badge/🤗-PuLID_FLUX_demo-orange)](https://huggingface.co/spaces/yanze/PuLID-FLUX) <br> [![Replicate](https://replicate.com/zsxkib/pulid/badge)](https://replicate.com/zsxkib/pulid) [![Replicate](https://replicate.com/zsxkib/flux-pulid/badge)](https://replicate.com/zsxkib/flux-pulid)<br>
 > Zinan Guo*, Yanze Wu*✝, Zhuowei Chen, Lang Chen, Qian He <br>
 > (*Equal Contribution, ✝Corresponding Author) <br>
 > ByteDance Inc <br>
@@ -21,6 +21,7 @@ We will actively update and maintain this repository in the near future, so plea
 - [x] Local gradio demo is ready now
 - [x] Online HuggingFace demo is ready now [![flux](https://img.shields.io/badge/🤗-PuLID_FLUX_demo-orange)](https://huggingface.co/spaces/yanze/PuLID-FLUX)
 - [x] We have optimized the codes to support consumer-grade GPUS, and now **PuLID-FLUX can run on a 16GB graphic card**. Check the details [here](https://github.com/ToTheBeginning/PuLID/blob/main/docs/pulid_for_flux.md#local-gradio-demo)
+- [x] Online Replicate demo is ready now [![Replicate](https://replicate.com/zsxkib/flux-pulid/badge)](https://replicate.com/zsxkib/flux-pulid)
 - [x] Support 12GB graphic card
 
 
@@ -71,7 +72,8 @@ and we will include them in this list.
 
 #### Online Demo
 - **Colab**: https://github.com/camenduru/PuLID-jupyter provided by [camenduru](https://github.com/camenduru)
-- **Replicate**: https://replicate.com/zsxkib/pulid provided by [zsxkib](https://replicate.com/zsxkib)
+- **Replicate (PuLID)**: https://replicate.com/zsxkib/pulid provided by [zsxkib](https://github.com/zsxkib)
+- **Replicate (PuLID-FLUX)**: https://replicate.com/zsxkib/flux-pulid provided by [zsxkib](https://github.com/zsxkib)
 
 #### ComfyUI
 - https://github.com/cubiq/PuLID_ComfyUI provided by [cubiq](https://github.com/cubiq), native ComfyUI implementation

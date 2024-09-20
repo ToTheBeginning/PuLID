@@ -127,8 +127,16 @@ class Flux(nn.Module):
 
         img = torch.cat((txt, img), 1)
         if aggressive_offload:
-            self.single_blocks = self.single_blocks.to(DEVICE)
+            # put half of the single blcoks to gpu
+            for i in range(len(self.single_blocks) // 2):
+                self.single_blocks[i] = self.single_blocks[i].to(DEVICE)
         for i, block in enumerate(self.single_blocks):
+            if aggressive_offload and i == len(self.single_blocks)//2:
+                # put first half of the single blcoks to cpu and last half to gpu
+                for j in range(len(self.single_blocks) // 2):
+                    self.single_blocks[j].cpu()
+                for j in range(len(self.single_blocks) // 2, len(self.single_blocks)):
+                    self.single_blocks[j] = self.single_blocks[j].to(DEVICE)
             x = block(img, vec=vec, pe=pe)
             real_img, txt = x[:, txt.shape[1]:, ...], x[:, :txt.shape[1], ...]
 

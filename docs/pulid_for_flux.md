@@ -25,7 +25,10 @@ Run `python app_flux.py --offload --fp8 --onnx_provider cpu`, the peak memory is
 
 For 24GB graphic memory users, you can run `python app_flux.py --offload --fp8`, the peak memory is under 17GB.
 
-However, there is a difference in image quality between fp8 and bf16, with some degradation in the former. 
+For 12GB graphic memory users, you can run `python app_flux.py --aggressive_offload --fp8 --onnx_provider cpu`, the peak memory is about 11GB. 
+However, using aggressive offload (like sequential offload), the speed will be very slow due to the frequent need for memory transfers between CPU and GPU at each timestep.
+
+Please note that, there is a difference in image quality between fp8 and bf16, with some degradation in the former. 
 Specifically, the details of the face may be slightly worse, but the layout is similar. If you want the best results
 of PuLID-FLUX or you have the resources, please use bf16 rather than fp8.
 We have included a comparison in the table below.

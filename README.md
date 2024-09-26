@@ -1,12 +1,13 @@
-# PuLID
+# PuLID (NeurIPS 2024)
 
 ### :open_book: PuLID: Pure and Lightning ID Customization via Contrastive Alignment
 > [![arXiv](https://img.shields.io/badge/arXiv-Paper-<COLOR>.svg)](https://arxiv.org/abs/2404.16022) [![xl](https://img.shields.io/badge/🤗-HuggingFaceDemo-orange)](https://huggingface.co/spaces/yanze/PuLID) [![flux](https://img.shields.io/badge/🤗-PuLID_FLUX_demo-orange)](https://huggingface.co/spaces/yanze/PuLID-FLUX) [![Replicate](https://img.shields.io/badge/Replicate-Demo_for_PuLID-blue)](https://replicate.com/zsxkib/pulid) [![Replicate](https://img.shields.io/badge/Replicate-PuLID_FLUX-blue)](https://replicate.com/zsxkib/flux-pulid)<br>
-> Zinan Guo*, Yanze Wu*✝, Zhuowei Chen, Lang Chen, Qian He <br>
+> Zinan Guo*, Yanze Wu*✝, Zhuowei Chen, Lang Chen, Peng Zhang, Qian He <br>
 > (*Equal Contribution, ✝Corresponding Author) <br>
 > ByteDance Inc <br>
 
 ### :triangular_flag_on_post: Updates
+* **2024.09.26**: PuLID is accepted by NeurIPS 2024
 * **2024.09.12**: 💥 We're thrilled to announce the release of the **PuLID-FLUX-v0.9.0 model**. Enjoy exploring its capabilities! 😊 [Learn more about this model](docs/pulid_for_flux.md)
 * **2024.05.23**: share the [preview of our upcoming v1.1 model](docs/v1.1_preview.md), please stay tuned
 * **2024.05.01**: release v1 codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)

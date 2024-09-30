@@ -13,6 +13,10 @@
 * **2024.05.01**: release v1 codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
 * **2024.04.25**: release arXiv paper.
 
+### :soon: update plan
+- [ ] release PuLID-FLUX-v0.9.1 model in 2024.10
+- [ ] release PuLID v1.1 (for SDXL) model in 2024.10
+
 ## PuLID for FLUX
 Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
 

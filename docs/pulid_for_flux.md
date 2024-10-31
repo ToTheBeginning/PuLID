@@ -4,12 +4,17 @@ We are happy to release the **PuLID-FLUX-v0.9.0** model, which provides a tuning
 If PuLID-FLUX is helpful, please help to ⭐ this repo or recommend it to your friends 😊
 
 ## Inference
+### :triangular_flag_on_post: Update
+- 2024.10.31: We release the **PuLID-FLUX.v0.9.1** model. Compared to the previous version, v0.9.1 has improved the ID fidelity, with an increase of about 5 percentage points in quantitative metrics of facial similarity.
+
 ### Local Gradio Demo
 You first need to follow the [dependencies-and-installation](../README.md#wrench-dependencies-and-installation) to set 
 up the environment, and download the `flux1-dev.safetensors` (if you want to use bf16 rather than fp8) and `ae.safetensors` from [black-forest-labs/FLUX.1-dev](https://huggingface.co/black-forest-labs/FLUX.1-dev/tree/main).
 The PuLID-FLUX model will be automatically downloaded from [huggingface](https://huggingface.co/guozinan/PuLID/tree/main).
 
 There are following four options to run the gradio demo:
+
+:notes: Note: The Gradio demo defaults to using the latest version of the model. If you need to switch to an older version or a specific version, please append `--version SPECIFIC_VERSION` to the following command lines.
 
 #### naive bf16
 simply run `python app_flux.py`, the peak memory is under 45GB.

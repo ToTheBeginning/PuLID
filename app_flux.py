@@ -49,7 +49,7 @@ class FluxGenerator:
             self.pulid_model.face_helper.face_det.device = torch.device("cuda")
             self.pulid_model.face_helper.device = torch.device("cuda")
             self.pulid_model.device = torch.device("cuda")
-        self.pulid_model.load_pretrain(args.pretrained_model)
+        self.pulid_model.load_pretrain(args.pretrained_model, version=args.version)
 
     @torch.inference_mode()
     def generate_image(
@@ -305,6 +305,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="PuLID for FLUX.1-dev")
+    parser.add_argument('--version', type=str, default='v0.9.1', help='version of the model', choices=['v0.9.0', 'v0.9.1'])
     parser.add_argument("--name", type=str, default="flux-dev", choices=list('flux-dev'),
                         help="currently only support flux-dev")
     parser.add_argument("--device", type=str, default="cuda", help="Device to use")

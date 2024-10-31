@@ -190,8 +190,10 @@ class IDFormer(nn.Module):
 
         latents = self.latents.repeat(x.size(0), 1, 1)
 
+        num_duotu = x.shape[1] if x.ndim == 3 else 1
+
         x = self.id_embedding_mapping(x)
-        x = x.reshape(-1, self.num_id_token, self.dim)
+        x = x.reshape(-1, self.num_id_token * num_duotu, self.dim)
 
         latents = torch.cat((latents, x), dim=1)
 

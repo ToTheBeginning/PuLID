@@ -7,15 +7,16 @@
 > ByteDance Inc <br>
 
 ### :triangular_flag_on_post: Updates
+* **2024.10.31**: 💥 We are happy to release our latest [models](https://huggingface.co/guozinan/PuLID), **PuLID-v1.1** and **PuLID-FLUX-v0.9.1**! 
 * **2024.09.26**: 🎉 PuLID accepted by NeurIPS 2024
-* **2024.09.12**: 💥 We're thrilled to announce the release of the **PuLID-FLUX-v0.9.0 model**. Enjoy exploring its capabilities! 😊 [Learn more about this model](docs/pulid_for_flux.md)
+* **2024.09.12**: We're thrilled to announce the release of the **PuLID-FLUX-v0.9.0 model**. Enjoy exploring its capabilities! 😊 [Learn more about this model](docs/pulid_for_flux.md)
 * **2024.05.23**: share the [preview of our upcoming v1.1 model](docs/v1.1_preview.md), please stay tuned
 * **2024.05.01**: release v1 codes&models, also the [🤗HuggingFace Demo](https://huggingface.co/spaces/yanze/PuLID)
 * **2024.04.25**: release arXiv paper.
 
 ### :soon: update plan
-- [ ] release PuLID-FLUX-v0.9.1 model in 2024.10
-- [ ] release PuLID v1.1 (for SDXL) model in 2024.10
+- [x] release PuLID-FLUX-v0.9.1 model in 2024.10
+- [x] release PuLID v1.1 (for SDXL) model in 2024.10
 
 ## PuLID for FLUX
 Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
@@ -28,6 +29,7 @@ We will actively update and maintain this repository in the near future, so plea
 - [x] We have optimized the codes to support consumer-grade GPUS, and now **PuLID-FLUX can run on a 16GB graphic card**. Check the details [here](https://github.com/ToTheBeginning/PuLID/blob/main/docs/pulid_for_flux.md#local-gradio-demo)
 - [x] (Community Implementation) Online Replicate demo is ready now [![Replicate](https://replicate.com/zsxkib/flux-pulid/badge)](https://replicate.com/zsxkib/flux-pulid)
 - [x] Local gradio demo supports 12GB graphic card now
+- [x] v0.9.1 is ready now
 
 
 Below results are generated with PuLID-FLUX.
@@ -62,7 +64,13 @@ pip install -r requirements_fp8.txt
 ## :zap: Quick Inference
 ### Local Gradio Demo
 ```bash
+# for v1 version
 python app.py
+
+# for v1.1 version
+python app_v1.1.py --base BASE_MODEL
+Usage:
+  -base: can be RunDiffusion/Juggernaut-XL-v9 or Lykon/dreamshaper-xl-lightning
 ```
 
 ### Online HuggingFace Demo

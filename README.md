@@ -18,8 +18,6 @@
 ## PuLID for FLUX
 Please check the doc and demo of PuLID-FLUX [here](docs/pulid_for_flux.md).
 
-We will actively update and maintain this repository in the near future, so please stay tuned.
-
 ### updates
 - [x] Local gradio demo is ready now
 - [x] Online HuggingFace demo is ready now [![flux](https://img.shields.io/badge/🤗-PuLID_FLUX_demo-orange)](https://huggingface.co/spaces/yanze/PuLID-FLUX)
@@ -82,7 +80,8 @@ Usage:
 
 ### Online HuggingFace Demo
 Thanks for the GPU grant from HuggingFace team, you can try PuLID HF demo in 
-[https://huggingface.co/spaces/yanze/PuLID](https://huggingface.co/spaces/yanze/PuLID)
+- [https://huggingface.co/spaces/yanze/PuLID](https://huggingface.co/spaces/yanze/PuLID) for SDXL
+- [https://huggingface.co/spaces/yanze/PuLID-FLUX](https://huggingface.co/spaces/yanze/PuLID-FLUX) for FLUX
 
 ## :paperclip: Related Resources
 Following are some third-party implementations of PuLID we have found in the Internet. 
@@ -100,6 +99,7 @@ and we will include them in this list.
 - https://github.com/ZHO-ZHO-ZHO/ComfyUI-PuLID-ZHO provided by [ZHO](https://github.com/ZHO-ZHO-ZHO), diffusers-based implementation
 
 #### WebUI
+- [SD.Next](https://github.com/vladmandic/automatic/blob/master/CHANGELOG.md#update-for-2024-11-21) Implementation provided by [vladmandic](https://github.com/vladmandic)
 - https://github.com/Mikubill/sd-webui-controlnet/pull/2838 provided by [huchenlei](https://github.com/huchenlei)
 
 ## Disclaimer
@@ -113,10 +113,10 @@ If PuLID is helpful, please help to ⭐ the repo.
 
 If you find this project useful for your research, please consider citing our paper:
 ```bibtex
-@article{guo2024pulid,
+@InProceedings{guo2024pulid,
   title={PuLID: Pure and Lightning ID Customization via Contrastive Alignment},
-  author={Guo, Zinan and Wu, Yanze and Chen, Zhuowei and Chen, Lang and He, Qian},
-  journal={arXiv preprint arXiv:2404.16022},
+  author={Guo, Zinan and Wu, Yanze and Chen, Zhuowei and Chen, Lang and Zhang, Peng and He, Qian},
+  booktitle={Advances in Neural Information Processing Systems},
   year={2024}
 }
 ```

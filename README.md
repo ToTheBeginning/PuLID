@@ -102,6 +102,9 @@ and we will include them in this list.
 - [SD.Next](https://github.com/vladmandic/automatic/blob/master/CHANGELOG.md#update-for-2024-11-21) Implementation provided by [vladmandic](https://github.com/vladmandic)
 - https://github.com/Mikubill/sd-webui-controlnet/pull/2838 provided by [huchenlei](https://github.com/huchenlei)
 
+#### Other Applications
+- PuLID-FLUX multi-person generation with [Regional-Prompting-FLUX](https://github.com/instantX-research/Regional-Prompting-FLUX), provided by [Anthony](https://github.com/antonioo-c)
+
 ## Disclaimer
 This project strives to impact the domain of AI-driven image generation positively. Users are granted the freedom to 
 create images using this tool, but they are expected to comply with local laws and utilize it responsibly. 

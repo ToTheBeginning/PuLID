@@ -6,6 +6,8 @@
 > (*Equal Contribution, ✝Corresponding Author) <br>
 > ByteDance Inc <br>
 
+🔥🔥 We are excited to share [DreamO](https://github.com/bytedance/DreamO), a unified image customization framework that supports ID, IP, Try-On, and style tasks. Check it out and see what it can do! 🔥🔥
+
 ### :triangular_flag_on_post: Updates
 * **2024.10.31**: 🔥 We are happy to release our latest [models](https://huggingface.co/guozinan/PuLID), **PuLID-v1.1** and **PuLID-FLUX-v0.9.1**. See more in [Model Zoo](#european_castle-model-zoo) and [pulid v1.1 model](docs/pulid_v1.1.md). We also update a new revision for the [arXiv paper](https://arxiv.org/abs/2404.16022), which includes more results, details, and analysis, please check it out.
 * **2024.09.26**: 🎉 PuLID accepted by NeurIPS 2024
@@ -123,6 +125,11 @@ If you find this project useful for your research, please consider citing our pa
   year={2024}
 }
 ```
+
+## Acknowledgement
+We would like to acknowledge our core team members, Pengze Zhang and Songtao Zhao, for their significant contributions 
+to the continued development and maintenance of the PuLID model. Although they were not listed as authors on the first 
+version of this paper, their efforts played a crucial role in enhancing the model.
 
 ## :e-mail: Contact
 If you have any comments or questions, please [open a new issue](https://github.com/ToTheBeginning/PuLID/issues/new/choose) or feel free to contact [Yanze Wu](https://tothebeginning.github.io/) and [Zinan Guo](mailto:guozinan.1@bytedance.com).

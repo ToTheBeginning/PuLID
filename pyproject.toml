@@ -1,23 +1,33 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pulid"
+version = "0.1.0"
+description = "Forked implementation of PuLID with custom changes"
+readme = ""
+requires-python = ">=3.8"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["*"]
+
+[tool.setuptools.package-data]
+"eva_clip" = ["bpe_simple_vocab_16e6.txt.gz"]
+"eva_clip.model_configs" = ["*.json"]
+
 [tool.ruff]
 line-length = 120
-# Deprecation of Cuda 11.6, Python 3.7 support for PyTorch 2.0
 target-version = "py38"
 exclude = ['eva_clip']
-# A list of file patterns to omit from linting, in addition to those specified by exclude.
 extend-exclude = ["__pycache__", "*.pyc", "*.egg-info", ".cache"]
-
 select = ["E", "F", "W", "C90", "I", "UP", "B", "C4", "RET", "RUF", "SIM"]
-
-
 ignore = [
-    "UP006",    # UP006: Use list instead of typing.List for type annotations
-    "UP007",    # UP007: Use X | Y for type annotations
-    "UP009",
-    "UP035",
-    "UP038",
-    "E402",
-    "RET504",
-    "C901",
+    "UP006", "UP007", "UP009", "UP035", "UP038",
+    "E402", "RET504", "C901"
 ]
 
 [tool.isort]

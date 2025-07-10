@@ -1,0 +1,2 @@
+recursive-include eva_clip *.txt.gz
+recursive-include eva_clip/model_configs *.json

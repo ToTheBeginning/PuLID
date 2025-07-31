@@ -207,7 +207,7 @@ def create_demo(args, model_name: str, device: str = "cuda" if torch.cuda.is_ava
 
                 width = gr.Slider(256, 1536, 896, step=16, label="Width")
                 height = gr.Slider(256, 1536, 1152, step=16, label="Height")
-                num_steps = gr.Slider(1, 20, 20, step=1, label="Number of steps")
+                num_steps = gr.Slider(1, 30, 28, step=1, label="Number of steps")
                 start_step = gr.Slider(0, 10, 0, step=1, label="timestep to start inserting ID")
                 guidance = gr.Slider(1.0, 10.0, 4, step=0.1, label="Guidance")
                 seed = gr.Textbox(-1, label="Seed (-1 for random)")
@@ -224,7 +224,7 @@ def create_demo(args, model_name: str, device: str = "cuda" if torch.cuda.is_ava
                 generate_btn = gr.Button("Generate")
 
             with gr.Column():
-                output_image = gr.Image(label="Generated Image")
+                output_image = gr.Image(label="Generated Image", format='png')
                 seed_output = gr.Textbox(label="Used Seed")
                 intermediate_output = gr.Gallery(label='Output', elem_id="gallery", visible=args.dev)
                 gr.Markdown(_CITE_)
@@ -306,7 +306,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="PuLID for FLUX.1-dev")
     parser.add_argument('--version', type=str, default='v0.9.1', help='version of the model', choices=['v0.9.0', 'v0.9.1'])
-    parser.add_argument("--name", type=str, default="flux-dev", choices=list('flux-dev'),
+    parser.add_argument("--name", type=str, default="flux-dev", choices=['flux-dev', 'flux-krea-dev'],
                         help="currently only support flux-dev")
     parser.add_argument("--device", type=str, default="cuda", help="Device to use")
     parser.add_argument("--offload", action="store_true", help="Offload model to CPU when not in use")

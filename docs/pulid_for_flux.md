@@ -5,6 +5,7 @@ If PuLID-FLUX is helpful, please help to ⭐ this repo or recommend it to your f
 
 ## Inference
 ### :triangular_flag_on_post: Update
+- 2025.08.01: support FLUX.1-Krea-dev, simply add `--name flux-krea-dev` when running app_flux.py
 - 2024.10.31: We release the **PuLID-FLUX.v0.9.1** model. Compared to the previous version, v0.9.1 has improved the ID fidelity, with an increase of about 5 percentage points in quantitative metrics of facial similarity.
 
 ### Local Gradio Demo
